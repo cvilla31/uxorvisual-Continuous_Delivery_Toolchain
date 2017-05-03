@@ -311,7 +311,7 @@ img.icons {
 }
 
 .footer-banner {
-    background-image: url('../images/watson-logo.svg');
+    /*background-image: url('../images/watson-logo.svg');*/
     background-position: right;
     background-repeat: no-repeat;
     background-size: 30em;

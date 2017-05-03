@@ -308,6 +308,13 @@ img.icons {
     overflow: auto;
 }
 
+/* TODO Ajust loading position */
+.loading {
+    position: absolute;
+    top: 40%;
+    z-index: 1;
+}
+
 .loading-gif {
     max-width: 246px;
     height: auto;

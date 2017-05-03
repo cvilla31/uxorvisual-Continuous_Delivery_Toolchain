@@ -47,6 +47,18 @@ function unlock(lockName) {
   lockState[lockName] = 0;
 }
 
+function showImage(input, i) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      $('#use--image' + i).attr('src', e.target.result);
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+  //if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#use--image1').attr('src', e.target.result); } reader.readAsDataURL(this.files[0]); }
+  
+}
+
 /*
  * Setups the "Try Out" and "Test" panels.
  * It connects listeners to the DOM elements in the panel to allow
@@ -66,6 +78,9 @@ function setupUse(params) {
 
   // jquery elements we are using
   var $loading = $(pclass + 'loading');
+  //TODO inline styles to position on the image loaded
+  
+  
   var $result = $(pclass + 'output');
   var $error = $(pclass + 'error');
   var $errorMsg = $(pclass + 'error-message');
@@ -131,7 +146,8 @@ function setupUse(params) {
     
     //TODO Identificar imagen con clasificador personalizado
     var isJadeGeenColor = false;
-    var minJadeGeenColorScore = 0.8;
+    var isOliveGeenColor = false;
+    var minColorScore = 0.7;
     var isPaperBased = false;
     var minPaperBasedScore = 0.65;
     var words = results.images[0].words;
@@ -149,13 +165,17 @@ function setupUse(params) {
     console.log(results.images[0]);
     
     for (var i=0; i < classified.length; i++ ) {
-      if (classified[i].class == "jade green color" && classified[i].score > minJadeGeenColorScore) 
+      if (classified[i].class == "jade green color" && classified[i].score > minColorScore) 
         isJadeGeenColor = true;
+      if (classified[i].class == "olive green color" && classified[i].score > minColorScore) 
+        isOliveGeenColor = true;
+      if (classified[i].class == "pale yellow color" && classified[i].score > minColorScore) 
+        isOliveGeenColor = true;
       if (classified[i].class == "paper based (stamps/currency)" && classified[i].score > minPaperBasedScore) 
         isPaperBased = true;    
     }
     
-    if (isJadeGeenColor || isPaperBased) {
+    if (isJadeGeenColor || isPaperBased || isOliveGeenColor) {
       console.log("Es Cédula de Vehículo");
       $('#img-cedula').attr("src", $('.use--output-image').attr("src"));
       
@@ -163,7 +183,8 @@ function setupUse(params) {
         var j = 0;
  
         marca = ((j = marcas.indexOf(words[i].word.toUpperCase())) > -1)? words[i].word: marca;
-        uso = ("PARTICULAR" === words[i].word.toUpperCase())? words[i].word: uso;
+        //modelo = ("PARTICULAR" === words[i].word.toUpperCase())? words[i].word: uso;
+        anio = (parseInt(words[i].word, 10) >= 1990 && parseInt(words[i].word, 10) <= 2017)? words[i].word: anio;
         uso = ("PRIVADO" === words[i].word.toUpperCase())? words[i].word: uso;
       }
     
@@ -177,6 +198,7 @@ function setupUse(params) {
    	  $dataIdentified.show();
    	  
    	} else {
+   	  $('#img-cedula').attr("src", "images/samples/cedula_vehiculo.jpg");
    	  $dataIdentified.empty();
       $dataIdentified.append("<p>No parece ser una cédula de vehículo</p>");
    	  $dataIdentified.show();
@@ -271,6 +293,9 @@ function setupUse(params) {
    * Radio image submission
    */
   $radioImages.click(function () {
+    console.log("radioImages.click this:");
+  	console.log($(this));
+    
     var rI = $(this);
     var imgPath = rI.next('label').find('img').attr('src');
     $urlInput.hide();
@@ -291,6 +316,8 @@ function setupUse(params) {
    * Random image submission
    */
   $randomImage.click(function (e) {
+  	console.log("randomImage.click e:");
+  	console.log(e);
     e.preventDefault();
     resetPasteUrl();
     var kind = StateManager.getState().kind;
