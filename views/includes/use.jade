@@ -1,0 +1,67 @@
+div._demo--container  
+  include ../mixins/sampleInput.jade
+  
+  //h2.base--h2.use--header Necesito unas fotos de tu Vehículo
+  h2.use--header Necesito una foto de tu Cédula de Vehículo
+  div Para acelerar el proceso de emisión de tu póliza necesito que tomes una foto de tu Cédula Única de Identificación de Vehículo.
+  //+sampleInput('use')
+  form(id='use--fileupload', class='use--form use--dropzone hideload', data-upload-template-id='template-upload-use')
+    input(id='classifier_id', type='hidden', name='classifier_id', value='#{classifierId || ""}')
+    div(class='use--example-images use--example-images_default')
+      label(class='use--example-thumb square', for='use--file0')
+        img(id='img-cedula', class='use--example-image', src='images/samples/cedula_vehiculo.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file0', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+    div(id='use--data-identified')
+    h2.use--header Necesito unas fotos de tu Vehículo
+    div Para acelerar el proceso de emisión de tu póliza necesito que tomes unas fotos de tu auto, en las posiciones indicadas.
+    div(class='use--example-images use--example-images_default')    
+      label(class='use--example-thumb square', for='use--file1')
+        img(class='use--example-image', src='images/samples/auto_frente.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file1', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file2')
+        img(class='use--example-image', src='images/samples/auto_derecha.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file2', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file3')
+        img(class='use--example-image', src='images/samples/auto_atras.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file3', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file4')
+        img(class='use--example-image', src='images/samples/auto_izquierda.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file4', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file5')
+        img(class='use--example-image', src='images/samples/auto_motor.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file5', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file6')
+        img(class='use--example-image', src='images/samples/auto_interior.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file6', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+      label(class='use--example-thumb square', for='use--file7')
+        img(class='use--example-image', src='images/samples/auto_tablero.jpg')
+        div(class='use--example-image-overlay')
+        input(id='use--file7', class='use--file-input', type='file', name='images_file', accept='image/*', title='Choose an image to upload')
+    div(class='use--url')
+      div(class='use--invalid-url display-none') Invalid URL
+      div(class='use--invalid-image-url display-none') The URL must end with .JPG, .GIF, or .PNG.
+      //input(class='use--url-input base--input', type='text', placeholder='Or paste an image URL', name='url')
+      input(class='use--image-data-input base--input', type='hidden', name='image_data')
+
+  .loading.use--loading.display-none
+    .loader-container
+      svg.loader(viewBox='25 25 50 50')
+        circle.loader__path(cx='50', cy='50', r='20')
+    p.base--p.use--loading-message.loading--message Reconociendo y analizando imagen...
+  .error.use--error.display-none
+    img.use--error-image.error--image(src='images/icons/alert.svg')
+    p.base--p.use--error-message.error--message Visual Recognition is not available right now...
+  .use--output.display-none
+    h2.base--th.use--output-header Tu Cédula de Vehículo
+    .use--output-row
+      .use--output-image-container
+        img.use--output-image
+      #box.boxes
+      .use--output-data
