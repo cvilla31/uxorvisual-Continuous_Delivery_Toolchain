@@ -311,7 +311,7 @@ img.icons {
 /* TODO Ajust loading position */
 .loading {
     position: absolute;
-    top: 40%;
+    top: 50%;
     z-index: 1;
 }
 

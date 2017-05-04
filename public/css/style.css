@@ -1112,7 +1112,7 @@ pre[class*=" language-"] {
       border-bottom: 6px solid #a53725; }
   .tab-panels--tab-content {
     padding: 0rem 1rem;
-    margin-top: 6rem; }
+    margin-top: 10rem; }
   .tab-panels--tab-content .base--textarea {
     min-height: 11.7rem;
     margin-top: 0rem; }
@@ -1140,9 +1140,10 @@ pre[class*=" language-"] {
     width: 100%;
     position: absolute;
     z-index: 100;
-    background-color: #e5e5e6;
-    text-align: center;
-    border: none; }
+    background-color: #f8f9f8;
+    text-align: center;    
+    border: none; 
+    border-bottom: #009688 3px solid; }
     @media (min-width: 768px) {
       .tab-views--tab-list {
         margin-left: -1rem; } }

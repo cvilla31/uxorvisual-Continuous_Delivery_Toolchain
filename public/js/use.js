@@ -149,7 +149,9 @@ function setupUse(params) {
     var isOliveGeenColor = false;
     var minColorScore = 0.7;
     var isPaperBased = false;
-    var minPaperBasedScore = 0.65;
+    var minPaperBasedScore = 0.5;
+    var isElectricalDevice = false;
+    var minElectricalDeviceScore = 0.5;
     var words = results.images[0].words;
     var marca = "No Identificado";
     var modelo = "No Identificado";
@@ -157,6 +159,7 @@ function setupUse(params) {
     var uso = "No Identificado";
     
     var marcas = ["FERRARI","CHEVROLET","CITROEN","FIAT","FORD","PEUGEOT","RENAULT","VOLKSWAGEN","ACURA","AEOLUS","AGRALE","ALEKO","ALFA ROMEO","ARO","ASIA","ASIA CAMION","AUDI","AUSTIN","AUTOBIANCHI","BELAVTOMAZ","BERTONE","BLAC","BMW","CHERY","CHEVROLET CAM.","CHRYSLER","DACIA","DAEWOO","DAIHATSU","DAIHATSU CAMION","DFM","DIMEX","ENIAK","F.E.R.E.S.A.","FORD CAMION","FOTON","G.A.Z.","GROSSPAL","HAM-JIANG","HEIBAO","HINO","HONDA","HUMMER","HYUNDAI","INTERNATIONAL","ISUZU","IVECO","IZH","JAC","JAGUAR","JINBEI","JMC","KAMAZ","KENWORTH","KIA","KIA CAMION","LADA","LANCIA","LIAZ","LIFAN","MACK","MAESTRO","MAHINDRA","MASERATI","MAZDA","MAZDA CAMION","MERCEDES BENZ","MERCEDES BENZ C","METRO","MINI COOPER","MITSUBISHI","MITSUBISHI CAM.","NAKAI (CHANGAN)","NISSAN","NISSAN CAMION","OPEL","PIAGGIO","POLONEZ","PORSCHE","PROTON","RANQUEL","RASTROJERO","RENAULT CAMION","ROLLS ROYCE","ROVER-LAND ROV.","SAAB","SANTANA","SANXING","SCANIA","SEAT","SKODA","SMART","SPACE","STAR (3-STAR)","SUBARU","SUZUKI","TATA","TATA CAMION","TAVRIA","TOYOTA","UAZ","VOLKSWAGEN CAM.","VOLVO","VOLVO CAMION","WULING MOTORS","YANTAI","YUEJIN"];
+    var anios = ["2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017"];
     var classified = results.images[0].classifiers[0].classes; //Clasificador por Defecto
     var $dataIdentified = $('#use--data-identified');
     
@@ -172,20 +175,25 @@ function setupUse(params) {
       if (classified[i].class == "pale yellow color" && classified[i].score > minColorScore) 
         isOliveGeenColor = true;
       if (classified[i].class == "paper based (stamps/currency)" && classified[i].score > minPaperBasedScore) 
-        isPaperBased = true;    
+        isPaperBased = true;
+      if (classified[i].class == "electrical device" && classified[i].score > minElectricalDeviceScore) 
+        isElectricalDevice = true;  
     }
     
-    if (isJadeGeenColor || isPaperBased || isOliveGeenColor) {
+    if (isPaperBased || isElectricalDevice || isJadeGeenColor || isOliveGeenColor ) {
       console.log("Es Cédula de Vehículo");
       $('#img-cedula').attr("src", $('.use--output-image').attr("src"));
       
-      for (var i=0; i < words.length; i++ ) {
-        var j = 0;
- 
-        marca = ((j = marcas.indexOf(words[i].word.toUpperCase())) > -1)? words[i].word: marca;
-        //modelo = ("PARTICULAR" === words[i].word.toUpperCase())? words[i].word: uso;
-        anio = (parseInt(words[i].word, 10) >= 1990 && parseInt(words[i].word, 10) <= 2017)? words[i].word: anio;
-        uso = ("PRIVADO" === words[i].word.toUpperCase())? words[i].word: uso;
+      if (words) {
+        for (var i=0; i < words.length; i++ ) {
+          var j = 0;
+   
+          marca = ((j = marcas.indexOf(words[i].word.toUpperCase())) > -1)? words[i].word: marca;
+          modelo = ("MODELO" === words[i].word.toUpperCase())? words[i+1].word: modelo;
+          //anio = (parseInt(words[i].word, 10) >= 1990 && parseInt(words[i].word, 10) <= 2017)? words[i].word: anio;
+          anio = ((j = anios.indexOf(words[i].word)) > -1)? anios[j]: anio;
+          uso = ("PRIVADO" === words[i].word.toUpperCase())? words[i].word: uso;
+        }
       }
     
       //Datos Identificados
@@ -195,15 +203,15 @@ function setupUse(params) {
       $dataIdentified.append("<b>Modelo: </b>" + modelo + "<br>");
       $dataIdentified.append("<b>Año: </b>" + anio + "<br>");
       $dataIdentified.append("<b>Uso: </b>" + uso + "</p>");
-   	  $dataIdentified.show();
-   	  
-   	} else {
-   	  $('#img-cedula').attr("src", "images/samples/cedula_vehiculo.jpg");
-   	  $dataIdentified.empty();
+      $dataIdentified.show();
+      
+    } else {
+      $('#img-cedula').attr("src", "images/samples/cedula_vehiculo.jpg");
+      $dataIdentified.empty();
       $dataIdentified.append("<p>No parece ser una cédula de vehículo</p>");
-   	  $dataIdentified.show();
-   	}
-   	  
+      $dataIdentified.show();
+    }
+      
     // populate table
     renderTable(results,null);
     //$result.show();
@@ -294,7 +302,7 @@ function setupUse(params) {
    */
   $radioImages.click(function () {
     console.log("radioImages.click this:");
-  	console.log($(this));
+    console.log($(this));
     
     var rI = $(this);
     var imgPath = rI.next('label').find('img').attr('src');
@@ -316,8 +324,8 @@ function setupUse(params) {
    * Random image submission
    */
   $randomImage.click(function (e) {
-  	console.log("randomImage.click e:");
-  	console.log(e);
+    console.log("randomImage.click e:");
+    console.log(e);
     e.preventDefault();
     resetPasteUrl();
     var kind = StateManager.getState().kind;
